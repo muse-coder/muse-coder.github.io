@@ -8,7 +8,7 @@ I am **Di Mou**, an AI infrastructure engineer at Alibaba Group. I received my b
 
 In 2024, I interned at Baidu, where I worked on distributed training of large language models on Kunlun AI accelerators. In 2025, I joined Alibaba Group, focusing on low-precision quantization, LLM inference optimization, and high-performance operator/kernel optimization.
 
-My earlier research focused on coarse-grained reconfigurable architectures (CGRAs), stochastic computing, and hardware-software co-design.
+My earlier research focused on AI accelerators and hardware-software co-design.
 
 ## Education
 
@@ -26,7 +26,7 @@ My earlier research focused on coarse-grained reconfigurable architectures (CGRA
 
 - **AI Infrastructure:** LLM systems, efficient inference, and agentic infrastructure
 - **GPU Systems:** kernel generation, profiling, and performance optimization
-- **Computer Architecture:** CGRA, stochastic computing, and hardware-software co-design
+- **Computer Architecture:** AI accelerators and hardware-software co-design
 
 ## Selected Projects
 
