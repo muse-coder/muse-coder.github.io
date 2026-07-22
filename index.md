@@ -30,9 +30,7 @@ My earlier research focused on AI accelerators and hardware-software co-design.
 
 ## Selected Projects
 
-- [LLM Infra Skills](https://github.com/muse-coder/llm_infra_skills) — reusable skills and workflows for LLM infrastructure engineering
-- [Kernel Agent](https://github.com/muse-coder/kernel-agent) — AI-assisted GPU kernel engineering and optimization
-- [AI Infra](https://github.com/muse-coder/AI-infra) — notes and experiments on AI infrastructure
+- [Atrex Kernel Agent](https://github.com/alibaba/atrex-kernel-agent) — an open-source agent for GPU kernel implementation, profiling, analysis, and iterative optimization
 
 ## News
 
