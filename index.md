@@ -17,9 +17,9 @@ My earlier research focused on coarse-grained reconfigurable architectures (CGRA
 
 ## Experience
 
-- **Alibaba Group**, AI Infrastructure Engineer, 2025 – Present  
+- **Alibaba Group**, AI Infrastructure Engineer, 2025 – Present<br>
   Low-precision quantization, LLM inference optimization, and operator/kernel optimization.
-- **Baidu**, Research & Development Intern, 2024  
+- **Baidu**, Research & Development Intern, 2024<br>
   Distributed LLM training on Kunlun AI accelerators.
 
 ## Research Interests
