@@ -37,9 +37,9 @@ I worked on distributed LLM training on Kunlun AI accelerators.
 
 - **[Feb. 2026]** Our study on outlier dynamics in LLM NVFP4 pretraining was released on arXiv.
 - **[2025]** Joined Alibaba Group and began working on low-precision quantization and LLM inference optimization.
-- **[Oct. 2024]** Our paper **DISC** was published at ICCAD 2024.
-- **[Sep. 2024]** Our paper **SC-CGRA** was published in IEEE TPDS.
+- **[Oct. 2024]** Our paper **DISC** was published at ICCAD 2024 **(CCF-B)**.
+- **[Sep. 2024]** Our paper **SC-CGRA** was published in IEEE TPDS **(CCF-A)**.
 - **[2024]** Interned at Baidu, working on distributed LLM training with Kunlun AI accelerators.
-- **[Jul. 2023]** Our paper **DARIC** was published at DAC 2023.
+- **[Jul. 2023]** Our paper **DARIC** was published at DAC 2023 **(CCF-A)**.
 
 {% include_relative _includes/publications.md %}
