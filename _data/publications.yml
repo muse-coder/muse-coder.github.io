@@ -1,22 +1,28 @@
 main:
+  - title: "Dissecting Outlier Dynamics in LLM NVFP4 Pretraining"
+    authors: "Peijie Dong, Ruibo Fan, Yuechen Tao, <strong>Di Mou</strong>, Wenhu Hu, Zhenheng Tang, Yinghao Yu, Jiamang Wang, Wenbo Su, Guodong Yang, Liping Zhang, Xiaowen Chu, Baochun Li, Bo Li"
+    conference_short: arXiv
+    conference: "arXiv preprint <strong>arXiv:2602.02047</strong>, 2026."
+    paper: https://arxiv.org/abs/2602.02047
+    pdf: https://arxiv.org/pdf/2602.02047
 
-  - title: Continual Learning for Abdominal Multi-Organ and Tumor Segmentation
-    authors: Yixiao Zhang, Xinyi Li, Huimiao Chen, Alan Yuille, <strong>Yaoyao Liu*</strong>, Zongwei Zhou* (*Corresponding authors)
-    conference_short: MICCAI
-    conference: International Conference on Medical Image Computing and Computer-Assisted Intervention <strong>(MICCAI)</strong>, 2023.
-    pdf: https://arxiv.org/pdf/2306.00988.pdf
-    code: https://github.com/MrGiovanni/ContinualLearning
-    bibtex: https://bib.yliu.me/MICCAI23.txt
-    image: ./assets/img/teaser_example_2.png
-    notes: Early Accept
+  - title: "SC-CGRA: An Energy-Efficient CGRA Using Stochastic Computing"
+    authors: "<strong>Di Mou</strong>, Bo Wang, Dajiang Liu"
+    conference_short: IEEE TPDS
+    conference: "IEEE Transactions on Parallel and Distributed Systems <strong>(IEEE TPDS)</strong>, vol. 35, no. 11, pp. 2023–2038, 2024."
+    paper: https://ieeexplore.ieee.org/abstract/document/10663960
+    doi: https://doi.org/10.1109/TPDS.2024.3453310
 
-  - title: "Mnemonics Training: Multi-Class Incremental Learning without Forgetting"
-    authors: <strong>Yaoyao Liu</strong>, Yuting Su, An-An Liu, Bernt Schiele, Qianru Sun
-    conference_short: CVPR
-    conference: IEEE/CVF Conference on Computer Vision and Pattern Recognition <strong>(CVPR)</strong>, 2020.
-    pdf: https://arxiv.org/pdf/2002.10211.pdf
-    code: https://github.com/yaoyao-liu/class-incremental-learning/tree/main/mnemonics-training
-    page: https://class-il.mpi-inf.mpg.de/mnemonics/
-    bibtex: https://class-il.mpi-inf.mpg.de/mnemonics/
-    notes: Oral Presentation
-    image: ./assets/img/teaser_example.png
+  - title: "DISC: Exploiting Data Parallelism of Non-Stencil Computations on CGRAs via Dynamic Iteration Scheduling"
+    authors: "Yue Liang, <strong>Di Mou</strong>, Dajiang Liu"
+    conference_short: ICCAD
+    conference: "43rd IEEE/ACM International Conference on Computer-Aided Design <strong>(ICCAD)</strong>, pp. 1–9, 2024."
+    paper: https://dl.acm.org/doi/abs/10.1145/3676536.3676734
+    doi: https://doi.org/10.1145/3676536.3676734
+
+  - title: "DARIC: A Data Reuse-Friendly CGRA for Parallel Data Access via Elastic FIFOs"
+    authors: "Dajiang Liu, <strong>Di Mou</strong>, Rong Zhu, Yan Zhuang, Jiaxing Shang, Jiang Zhong, Shouyi Yin"
+    conference_short: DAC
+    conference: "60th ACM/IEEE Design Automation Conference <strong>(DAC)</strong>, pp. 1–6, 2023."
+    paper: https://ieeexplore.ieee.org/abstract/document/10247862
+    doi: https://doi.org/10.1109/DAC56929.2023.10247862
