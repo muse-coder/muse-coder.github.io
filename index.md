@@ -6,15 +6,19 @@ layout: homepage
 
 I am **Di Mou**, an AI infrastructure engineer working on efficient training and inference for large language models.
 
-### 2025 – Present · Alibaba Group
+## Professional Experience
+
+**Alibaba Group · AI Infrastructure Engineer**<br>
+*2025 – Present*
 
 I focus on low-precision quantization, LLM inference optimization, and high-performance operator/kernel optimization.
 
-### 2024 · Baidu
+**Baidu · Research and Development Intern**<br>
+*2024*
 
-I worked on distributed LLM training on Kunlun AI accelerators as a research and development intern.
+I worked on distributed LLM training on Kunlun AI accelerators.
 
-### Academic Background
+## Education
 
 - **2022–2025 · Chongqing University** — Master's degree; research on AI accelerators and hardware-software co-design
 - **2018–2022 · Fuzhou University** — Bachelor's degree
