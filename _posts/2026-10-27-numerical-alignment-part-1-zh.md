@@ -21,7 +21,7 @@ description: "从 BF16 的 256 + 1 开始，理解舍入误差、累加顺序，
 
 ## 2. 计算机没办法准确表示所有数
 
-浮点数只用有限的位数存储数值。有些数能精确保存，有些只能取近似值，计算中产生的中间结果也一样。[浮点表示与舍入原理](https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html)。
+浮点数只用有限的位数存储数值。有些数能精确保存，有些只能取近似值，计算中产生的中间结果也一样。
 
 比如保存十进制数 **1.001**，选各自格式里离它最近的值：
 
@@ -43,7 +43,7 @@ description: "从 BF16 的 256 + 1 开始，理解舍入误差、累加顺序，
 | 向正无穷 `ru` | 朝更大的方向取值 | 2 | −1 |
 | 向负无穷 `rd` | 朝更小的方向取值 | 1 | −2 |
 
-**NVIDIA GPU 上的 CUDA 基本浮点算术默认采用 `rn`，也就是“舍入到最近值，中点取偶数”。** 这是最常遇到的方式；也可以通过相应指令选择其他模式。这里的“偶数”对应保留的有效数二进制末位为 0。[NVIDIA 文档：4.2 Rounding Modes](https://docs.nvidia.com/cuda/floating-point/index.html#rounding-modes)。
+**NVIDIA GPU 上的 CUDA 基本浮点算术默认采用 `rn`，也就是“舍入到最近值，中点取偶数”。** 这是最常遇到的方式；也可以通过相应指令选择其他模式。这里的“偶数”对应保留的有效数二进制末位为 0。
 
 舍入后的值与精确值之间的差异，叫**舍入误差**。只看大小，就取差值的绝对值：
 
@@ -51,15 +51,15 @@ description: "从 BF16 的 256 + 1 开始，理解舍入误差、累加顺序，
 
 1.001 存成 BF16 后变成 1，绝对误差就是 `|1 − 1.001| = 0.001`。还没开始做矩阵乘法，误差就已经出现了。
 
-在 `[1, 2)` 内，BF16 的刻度间距是 `0.0078125`，FP32 约为 `0.0000001192`，FP8 E4M3FN 则是 `0.125`。格式不同，能保留的细节也不同。[FP8 格式论文](https://arxiv.org/html/2209.05433v2)。
+在 `[1, 2)` 内，BF16 的刻度间距是 `0.0078125`，FP32 约为 `0.0000001192`，FP8 E4M3FN 则是 `0.125`。格式不同，能保留的细节也不同。
 
-还有一点容易忽略：**浮点数的刻度间距会随数值大小变化。** BF16 到了 `[256, 512)`，间距就变成了 2。它并不是“固定保留几位小数”，FP32 也一样。[浮点格式说明](https://docs.nvidia.com/cuda/floating-point/index.html)。
+还有一点容易忽略：**浮点数的刻度间距会随数值大小变化。** BF16 到了 `[256, 512)`，间距就变成了 2。它并不是“固定保留几位小数”，FP32 也一样。
 
 这里比较不同格式，是为了看清舍入怎么发生。接下来把格式固定住，看计算过程本身会带来什么误差。
 
 ## 3. 计算过程中的精度误差
 
-**先限定精度格式：加法结果按最近偶数规则舍入到 BF16。** 以 **256 + 1 = 257** 为例，两个输入都能用 BF16 精确表示，但结果 257 不行：它的二进制形式是 `1.00000001₂ × 2⁸`，需要 **9 位二进制有效数字**，而 BF16 只能保留 **8 位**（包括隐含的最高位 1）。[NVIDIA BF16 类型定义](https://docs.nvidia.com/cuda/archive/13.1.1/cuda-math-api/cuda_math_api/struct____nv__bfloat16.html)。
+**先限定精度格式：加法结果按最近偶数规则舍入到 BF16。** 以 **256 + 1 = 257** 为例，两个输入都能用 BF16 精确表示，但结果 257 不行：它的二进制形式是 `1.00000001₂ × 2⁸`，需要 **9 位二进制有效数字**，而 BF16 只能保留 **8 位**（包括隐含的最高位 1）。
 
 257 两侧能精确表示的 BF16 数是：
 
@@ -79,15 +79,15 @@ description: "从 BF16 的 256 + 1 开始，理解舍入误差、累加顺序，
 
 第一种顺序每次都遇到无法精确保存的 257，两个 1 分别被舍掉，最终绝对误差为 2。第二种顺序先把两个 1 加成 2，再加到 256 上，两步都没有舍入误差。
 
-**输入、精度格式和舍入规则都没变，只改变加法的分组，结果就不同了。** 原因是分组改变了中间值，而不同的中间值会经历不同的舍入。这就是浮点加法不满足结合律。[NVIDIA 的浮点运算说明](https://docs.nvidia.com/cuda/floating-point/index.html#operations-and-accuracy)。
+**输入、精度格式和舍入规则都没变，只改变加法的分组，结果就不同了。** 原因是分组改变了中间值，而不同的中间值会经历不同的舍入。这就是浮点加法不满足结合律。
 
-这个例子限定了每一步都舍入到 BF16。在这个例子中，如果改用 FP32 累加，两种顺序都会得到 258，最后转成 BF16 也不会改变。FP32 同样会舍入，只是这里的计算都能精确完成。因此，输入的 dtype 相同，还需要继续确认内部的累加精度和运算顺序。GPU kernel 采用不同的分块、局部求和与合并方式，就可能改变这些中间结果。[PyTorch 数值精度说明](https://docs.pytorch.org/docs/2.11/notes/numerical_accuracy.html)。
+这里每一步都舍入到 BF16。如果改用 FP32 累加，两种顺序都会得到 258，最后转成 BF16 也不会改变。FP32 同样会舍入，只是这里的计算都能精确完成。因此，输入的 dtype 相同，还需要继续确认内部的累加精度和运算顺序。GPU kernel 采用不同的分块、局部求和与合并方式，就可能改变这些中间结果。
 
-比如，**NVIDIA 官方文档也举了同一个点积采用不同实现，结果可能不一致的例子**。计算目标都是：
+比如，NVIDIA 官方文档[《Floating Point and IEEE 754 Compliance for NVIDIA GPUs》](https://docs.nvidia.com/cuda/floating-point/index.html#example-algorithms)也举了同一个点积采用不同实现，结果可能不一致的例子。计算目标都是：
 
 `a₁b₁ + a₂b₂ + a₃b₃ + a₄b₄`
 
-下面三张图引自 Nathan Whitehead、Alex Fit-Florea 为 NVIDIA 撰写的 [《Floating Point and IEEE 754 Compliance for NVIDIA GPUs》第 3 节](https://docs.nvidia.com/cuda/floating-point/index.html#example-algorithms)，分别对应原文图 2、3、4。
+以下三张图引自该文档的图 2、3、4。
 
 **串行实现：** 乘法和加法分开执行，沿着一条链依次累加，中间结果分别舍入。
 
@@ -101,4 +101,11 @@ description: "从 BF16 的 256 + 1 开始，理解舍入误差、累加顺序，
 
 ![NVIDIA 原文图 4：树形求和实现](/assets/img/blog/numerical-alignment-part-1/nv_parallel_method.png)
 
-这三种实现都使用符合 IEEE 754 的运算，最终结果仍可能不同。区别就在于乘加是否融合、求和如何分组，以及舍入发生在哪里。[原文对比说明](https://docs.nvidia.com/cuda/floating-point/index.html#comparison)。
+这三种实现都使用符合 IEEE 754 的运算，最终结果仍可能不同。区别就在于乘加是否融合、求和如何分组，以及舍入发生在哪里。
+
+## 参考
+
+1. Nathan Whitehead, Alex Fit-Florea. [Floating Point and IEEE 754 Compliance for NVIDIA GPUs](https://docs.nvidia.com/cuda/floating-point/index.html). NVIDIA.
+2. Paulius Micikevicius 等. [FP8 Formats for Deep Learning](https://arxiv.org/abs/2209.05433v2). 2022.
+3. PyTorch. [Numerical accuracy](https://docs.pytorch.org/docs/2.11/notes/numerical_accuracy.html).
+4. David Goldberg. [What Every Computer Scientist Should Know About Floating-Point Arithmetic](https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html). 1991.

@@ -21,7 +21,7 @@ There are three useful places to look: **implementation bugs**, such as an incor
 
 ## 2. Computers cannot represent every number exactly
 
-A floating-point format stores a number using a finite number of bits. Some values are exactly representable; others must be approximated. The same limitation applies to intermediate results. [Goldberg's explanation of floating-point representation and rounding](https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html) covers the underlying principles.
+A floating-point format stores a number using a finite number of bits. Some values are exactly representable; others must be approximated. The same limitation applies to intermediate results.
 
 For example, take the decimal number **1.001** and choose the nearest representable value in each format:
 
@@ -43,7 +43,7 @@ Four common rounding modes are listed below. The examples round to integers to m
 | `ru` | Round toward positive infinity | 2 | −1 |
 | `rd` | Round toward negative infinity | 1 | −2 |
 
-**Basic CUDA floating-point arithmetic on NVIDIA GPUs defaults to `rn`: round to nearest, ties to even.** Other modes can be selected with the corresponding instructions. Here, “even” means that the last retained bit of the binary significand is 0. See [NVIDIA's section on rounding modes](https://docs.nvidia.com/cuda/floating-point/index.html#rounding-modes).
+**Basic CUDA floating-point arithmetic on NVIDIA GPUs defaults to `rn`: round to nearest, ties to even.** Other modes can be selected with the corresponding instructions. Here, “even” means that the last retained bit of the binary significand is 0.
 
 The difference between the rounded value and the exact value is **rounding error**. Its magnitude is the absolute rounding error:
 
@@ -53,15 +53,15 @@ Absolute rounding error = |rounded value − exact value|
 
 Storing 1.001 as BF16 gives 1, so the absolute error is `|1 − 1.001| = 0.001`. We already have an error before any matrix multiplication begins.
 
-Within `[1, 2)`, the spacing between adjacent values is `0.0078125` for BF16, about `0.0000001192` for FP32, and `0.125` for FP8 E4M3FN. Different formats retain different amounts of detail. The [FP8 formats paper](https://arxiv.org/html/2209.05433v2) describes the FP8 representations.
+Within `[1, 2)`, the spacing between adjacent values is `0.0078125` for BF16, about `0.0000001192` for FP32, and `0.125` for FP8 E4M3FN. Different formats retain different amounts of detail.
 
-One detail is easy to miss: **floating-point spacing changes with magnitude.** In `[256, 512)`, BF16's spacing is 2. Floating-point formats do not keep a fixed number of decimal places; FP32 follows the same principle. [NVIDIA's floating-point guide](https://docs.nvidia.com/cuda/floating-point/index.html) explains this representation.
+One detail is easy to miss: **floating-point spacing changes with magnitude.** In `[256, 512)`, BF16's spacing is 2. Floating-point formats do not keep a fixed number of decimal places; FP32 follows the same principle.
 
 Comparing formats makes rounding easier to see. Now let us keep the format fixed and look at the arithmetic itself.
 
 ## 3. Errors introduced during computation
 
-**For this example, every addition is rounded to BF16 using round to nearest, ties to even.** Consider `256 + 1 = 257`. Both inputs are exactly representable in BF16, but 257 is not. Its binary representation is `1.00000001₂ × 2⁸`, which needs **9 significant binary bits**. BF16 has **8**, including the implicit leading 1. See [NVIDIA's BF16 type definition](https://docs.nvidia.com/cuda/archive/13.1.1/cuda-math-api/cuda_math_api/struct____nv__bfloat16.html).
+**For this example, every addition is rounded to BF16 using round to nearest, ties to even.** Consider `256 + 1 = 257`. Both inputs are exactly representable in BF16, but 257 is not. Its binary representation is `1.00000001₂ × 2⁸`, which needs **9 significant binary bits**. BF16 has **8**, including the implicit leading 1.
 
 The two neighboring BF16 values are:
 
@@ -81,17 +81,17 @@ Add one more 1, and the effect of evaluation order becomes visible. All inputs a
 
 In the first grouping, both additions produce the unrepresentable value 257. Each increment of 1 is lost to rounding, leaving a final absolute error of 2. In the second grouping, the two 1s are added first. Both steps are exact, so the final error is 0.
 
-**The inputs, precision format, and rounding rule are unchanged. Only the grouping differs.** Grouping changes the intermediate values, and those values can round differently. Floating-point addition is therefore not associative. [NVIDIA's discussion of operations and accuracy](https://docs.nvidia.com/cuda/floating-point/index.html#operations-and-accuracy) illustrates the same issue.
+**The inputs, precision format, and rounding rule are unchanged. Only the grouping differs.** Grouping changes the intermediate values, and those values can round differently. Floating-point addition is therefore not associative.
 
-The BF16 rounding after every addition is essential to this example. With FP32 accumulation, **both groupings give exactly 258 in this case**, and converting that result to BF16 leaves it unchanged. FP32 still has rounding error in general; these particular additions happen to be exact. Matching input dtypes is therefore only part of the picture: accumulation precision and evaluation order also matter. GPU kernels can produce different intermediate values by changing their tiling, partial sums, and merge order. [PyTorch's numerical accuracy notes](https://docs.pytorch.org/docs/2.11/notes/numerical_accuracy.html) discuss these differences.
+The BF16 rounding after every addition is essential to this example. With FP32 accumulation, **both groupings give exactly 258 in this case**, and converting that result to BF16 leaves it unchanged. FP32 still has rounding error in general; these particular additions happen to be exact. Matching input dtypes is therefore only part of the picture: accumulation precision and evaluation order also matter. GPU kernels can produce different intermediate values by changing their tiling, partial sums, and merge order.
 
-**NVIDIA's documentation also compares different implementations of the same dot product that can produce different results.** Each computes:
+NVIDIA's [*Floating Point and IEEE 754 Compliance for NVIDIA GPUs*](https://docs.nvidia.com/cuda/floating-point/index.html#example-algorithms) compares three implementations of the same dot product that can produce different results. Each computes:
 
 ```text
 a₁b₁ + a₂b₂ + a₃b₃ + a₄b₄
 ```
 
-The following three diagrams are reproduced from [Section 3 of *Floating Point and IEEE 754 Compliance for NVIDIA GPUs*](https://docs.nvidia.com/cuda/floating-point/index.html#example-algorithms), by Nathan Whitehead and Alex Fit-Florea. They are Figures 2, 3, and 4 in the original document.
+The diagrams below are NVIDIA's Figures 2, 3, and 4 from that document.
 
 **Serial implementation.** Multiplications and additions are separate operations. Products are accumulated along a single chain, with rounding at each operation.
 
@@ -105,4 +105,11 @@ The following three diagrams are reproduced from [Section 3 of *Floating Point a
 
 ![NVIDIA Figure 4: tree-based dot-product implementation](/assets/img/blog/numerical-alignment-part-1/nv_parallel_method.png)
 
-All three implementations use IEEE 754-compliant operations, yet their final results can differ. Whether multiplication and addition are fused, how additions are grouped, and where rounding occurs all affect the answer. See [NVIDIA's comparison](https://docs.nvidia.com/cuda/floating-point/index.html#comparison).
+All three implementations use IEEE 754-compliant operations, yet their final results can differ. Whether multiplication and addition are fused, how additions are grouped, and where rounding occurs all affect the answer.
+
+## References
+
+1. Nathan Whitehead and Alex Fit-Florea. [*Floating Point and IEEE 754 Compliance for NVIDIA GPUs*](https://docs.nvidia.com/cuda/floating-point/index.html). NVIDIA.
+2. Paulius Micikevicius et al. [*FP8 Formats for Deep Learning*](https://arxiv.org/abs/2209.05433v2). 2022.
+3. PyTorch. [*Numerical accuracy*](https://docs.pytorch.org/docs/2.11/notes/numerical_accuracy.html).
+4. David Goldberg. [*What Every Computer Scientist Should Know About Floating-Point Arithmetic*](https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html). 1991.
