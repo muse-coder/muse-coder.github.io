@@ -6,6 +6,15 @@ layout: homepage
 
 I am **Di Mou**, an AI infrastructure engineer working on efficient training and inference for large language models.
 
+## Blog
+
+Notes from building and optimizing LLM systems, in English and Chinese.
+
+**Numerical Alignment in LLM Acceleration · Part 1: Where Errors Come From**<br>
+大模型加速绕不过的精度对齐（一）：误差的来源
+
+[Read in English]({{ '/blog/numerical-alignment-part-1/en/' | relative_url }}) · [阅读中文版]({{ '/blog/numerical-alignment-part-1/zh/' | relative_url }}) · [All posts / 所有文章]({{ '/blog/' | relative_url }})
+
 ## Professional Experience
 
 **Alibaba Group · AI Infrastructure Engineer** · *2025 – Present*

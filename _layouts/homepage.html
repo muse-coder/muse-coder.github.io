@@ -34,6 +34,7 @@
     <link rel="stylesheet" href="./assets/css/publications-no-dark-mode.css">
     {% endif %}
 
+    <link rel="stylesheet" href="{{ "/assets/css/blog.css" | relative_url }}">
   </head>
   <body>
     <div class="wrapper">
@@ -92,6 +93,10 @@
         </div>
         <br>
 
+        <nav class="homepage-nav" aria-label="Main navigation">
+          <a href="{{ '/' | relative_url }}" aria-current="page">Home</a>
+          <a href="{{ '/blog/' | relative_url }}">Blog / 博客</a>
+        </nav>
       </header>
       <section>
 

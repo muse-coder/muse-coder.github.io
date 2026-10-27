@@ -36,3 +36,8 @@ exclude:
   - LICENSE
   - minimal-light.gemspec
   - html_source_file/
+
+# Blog URLs and publication timezone
+url: https://muse-coder.github.io
+baseurl: ""
+timezone: Asia/Shanghai

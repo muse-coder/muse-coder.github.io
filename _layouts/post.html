@@ -1,0 +1,31 @@
+---
+layout: blog
+---
+<article class="blog-article">
+  <header class="article-header">
+    <a class="back-link" href="{{ '/blog/' | relative_url }}">← {% if page.lang == 'zh-CN' %}所有文章{% else %}All posts{% endif %}</a>
+    <p class="eyebrow">{{ page.series }}</p>
+    <h1>{{ page.title }}</h1>
+    <p class="article-subtitle">{{ page.subtitle }}</p>
+    <div class="article-meta">
+      <span>{{ page.author | default: site.title }}</span>
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: '%Y-%m-%d' }}</time>
+      <nav class="language-switch" aria-label="{% if page.lang == 'zh-CN' %}文章语言{% else %}Article language{% endif %}">
+        {% assign translations = site.posts | where: 'translation_key', page.translation_key | sort: 'lang' %}
+        {% for translation in translations %}
+        <a href="{{ translation.url | relative_url }}" lang="{{ translation.lang }}" hreflang="{{ translation.lang }}"{% if translation.lang == page.lang %} aria-current="page"{% endif %}>{% if translation.lang == 'zh-CN' %}中文{% else %}English{% endif %}</a>
+        {% endfor %}
+      </nav>
+    </div>
+  </header>
+  <div class="article-content">
+    {% if page.lang == 'zh-CN' %}
+      {{ content | replace: '<table>', '<div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>' | replace: '</table>', '</table></div>' }}
+    {% else %}
+      {{ content | replace: '<table>', '<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable table"><table>' | replace: '</table>', '</table></div>' }}
+    {% endif %}
+  </div>
+  <div class="article-end">
+    <a href="{{ '/blog/' | relative_url }}">← {% if page.lang == 'zh-CN' %}返回 Blog{% else %}Back to Blog{% endif %}</a>
+  </div>
+</article>
